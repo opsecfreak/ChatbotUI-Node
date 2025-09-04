@@ -16,9 +16,19 @@ export async function POST(request: NextRequest) {
     
     const { message, messages } = await request.json();
     
-    // Log the incoming request data
+    // Extract user details from session for logging and potential personalization
+    const userDetails = {
+      id: session.user?.id,
+      name: session.user?.name,
+      email: session.user?.email,
+      username: session.user?.username,
+      provider: session.user?.provider,
+      role: session.user?.role
+    };
+    
+    // Log the incoming request data with user details
     console.log('Chat API received:', {
-      user: session?.user?.name || session?.user?.email || 'authenticated user',
+      user: userDetails,
       message,
       messageCount: messages?.length || 0,
       timestamp: new Date().toISOString()
@@ -57,9 +67,12 @@ export async function POST(request: NextRequest) {
 /**
  * Process the user message and generate a response
  * This is a placeholder for more complex processing logic
+ * In a real application, you would integrate with a language model API
+ * and possibly include user context for personalization
  */
 async function processUserMessage(message: string): Promise<string> {
-  // You could replace this with an actual API call to a language model
+  // You would replace this with an actual API call to a language model
+  // and possibly include user-specific context
   
   // Simple keyword-based responses for demo
   const lowerMessage = message.toLowerCase();

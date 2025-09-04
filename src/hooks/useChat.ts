@@ -9,6 +9,7 @@ export function useChat() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const { data: session } = useSession();
 
   // Initialize with a welcome message
   useEffect(() => {
@@ -61,10 +62,12 @@ export function useChat() {
       setMessages(prev => {
         const updatedMessages = [...prev, assistantMessage];
         
-        // Optionally save the chat history (could use debounce in a real app)
-        // Using a mock user ID for demonstration
-        saveChatHistory('user-123', updatedMessages)
-          .catch(err => console.error('Failed to save history:', err));
+        // Save the chat history with the user's ID from the session
+        // This would allow for user-specific chat history persistence
+        if (session?.user?.id) {
+          saveChatHistory(session.user.id, updatedMessages)
+            .catch(err => console.error('Failed to save history:', err));
+        }
           
         return updatedMessages;
       });

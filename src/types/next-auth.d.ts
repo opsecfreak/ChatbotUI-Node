@@ -10,6 +10,12 @@ declare module "next-auth" {
     user: {
       /** The user's role. */
       role?: string;
+      /** The user's unique ID. */
+      id?: string;
+      /** The user's GitHub username (if using GitHub provider). */
+      username?: string;
+      /** The authentication provider (e.g., 'github', 'credentials'). */
+      provider?: string;
     } & DefaultSession["user"];
   }
 
@@ -19,6 +25,10 @@ declare module "next-auth" {
   interface User {
     /** The user's role. */
     role?: string;
+    /** The user's GitHub username (if using GitHub provider). */
+    username?: string;
+    /** The authentication provider (e.g., 'github', 'credentials'). */
+    provider?: string;
   }
 }
 
@@ -27,5 +37,9 @@ declare module "next-auth/jwt" {
   interface JWT {
     /** The user's role */
     role?: string;
+    /** The user's GitHub username (if using GitHub provider). */
+    username?: string;
+    /** The authentication provider (e.g., 'github', 'credentials'). */
+    provider?: string;
   }
 }
