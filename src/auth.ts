@@ -1,5 +1,6 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
+import GitHubProvider from "next-auth/providers/github";
 import type { NextAuthConfig } from "next-auth";
 import type { DefaultSession } from "next-auth";
 
@@ -9,17 +10,23 @@ declare module "next-auth" {
     user: {
       role?: string;
       id?: string;
+      username?: string;
+      provider?: string;
     } & DefaultSession["user"];
   }
   
   interface User {
     role?: string;
+    username?: string;
+    provider?: string;
   }
 }
 
 declare module "next-auth/jwt" {
   interface JWT {
     role?: string;
+    username?: string;
+    provider?: string;
   }
 }
 
@@ -30,6 +37,21 @@ if (!process.env.ADMIN_PASSWORD) {
 
 export const authConfig = {
   providers: [
+    GitHubProvider({
+      clientId: process.env.GITHUB_ID || "",
+      clientSecret: process.env.GITHUB_SECRET || "",
+      profile(profile) {
+        return {
+          id: profile.id.toString(),
+          name: profile.name || profile.login,
+          email: profile.email,
+          image: profile.avatar_url,
+          role: "user",
+          username: profile.login,
+          provider: "github",
+        };
+      },
+    }),
     Credentials({
       name: "Password",
       credentials: {
@@ -42,6 +64,7 @@ export const authConfig = {
             name: "Admin User",
             email: "admin@example.com",
             role: "admin",
+            provider: "credentials",
           };
         }
         return null;
