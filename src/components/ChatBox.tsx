@@ -24,19 +24,19 @@ export default function ChatBox() {
   };
 
   return (
-    <div className="flex flex-col h-full max-h-[calc(100vh-2rem)] bg-white dark:bg-gray-900 rounded-xl shadow-xl overflow-hidden">
-      <div className="bg-gray-100 dark:bg-gray-800 px-4 py-3 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
-        <h1 className="text-lg font-semibold">Chat Assistant</h1>
+    <div className="flex flex-col h-full max-h-[calc(100vh-1rem)] bg-white dark:bg-gray-900 rounded-xl shadow-xl overflow-hidden">
+      <div className="bg-gray-100 dark:bg-gray-800 px-4 py-2 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+        <h1 className="text-lg font-medium">Chat Assistant</h1>
         <div className="flex space-x-3 items-center">
           {session?.user?.name && (
-            <span className="text-sm text-gray-600 dark:text-gray-400">
+            <span className="text-xs text-gray-600 dark:text-gray-400">
               {session.user.name}
             </span>
           )}
           {messages.length > 1 && (
             <button 
               onClick={() => setShowFeedback(!showFeedback)}
-              className="text-sm px-2 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition"
+              className="text-xs px-2 py-1 rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition"
             >
               Feedback
             </button>
