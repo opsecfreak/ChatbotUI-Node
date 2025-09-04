@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useEffect } from 'react';
 import { Message } from '../types';
+import { sendChatMessage, saveChatHistory } from '../utils/apiUtils';
 
 export function useChat() {
   const [messages, setMessages] = useState<Message[]>([]);
@@ -44,18 +45,8 @@ export function useChat() {
       setIsLoading(true);
       setError(null);
       
-      // Send the message to the API
-      const response = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: content, messages }),
-      });
-      
-      if (!response.ok) {
-        throw new Error(`Error: ${response.status}`);
-      }
-      
-      const data = await response.json();
+      // Send the message to the API using our utility function
+      const data = await sendChatMessage(content, messages);
       
       // Create a new assistant message
       const assistantMessage: Message = {
@@ -66,7 +57,16 @@ export function useChat() {
       };
       
       // Add the assistant message to the chat
-      setMessages(prev => [...prev, assistantMessage]);
+      setMessages(prev => {
+        const updatedMessages = [...prev, assistantMessage];
+        
+        // Optionally save the chat history (could use debounce in a real app)
+        // Using a mock user ID for demonstration
+        saveChatHistory('user-123', updatedMessages)
+          .catch(err => console.error('Failed to save history:', err));
+          
+        return updatedMessages;
+      });
       
     } catch (err) {
       console.error('Error sending message:', err);
