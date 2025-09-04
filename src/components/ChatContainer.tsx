@@ -92,7 +92,7 @@ export default function ChatContainer({ messages, isLoading }: ChatContainerProp
   return (
     <div
       ref={chatContainerRef}
-      className="flex-1 overflow-y-auto px-4 py-6 scrollbar-hide"
+      className="flex-1 overflow-y-auto px-4 py-6 scrollbar-hide h-full max-h-[calc(100vh-180px)]"
     >
       {messages.map((message, index) => (
         <div key={message.id} ref={index === messages.length - 1 ? lastMessageRef : undefined}>
