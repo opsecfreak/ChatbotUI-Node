@@ -48,7 +48,7 @@ export default function ChatContainer({ messages, isLoading }: ChatContainerProp
   // Modern, more subtle typing indicator
   const LoadingIndicator = () => (
     <div className="flex w-full justify-start mb-4 fade-in">
-      <div className="bg-[var(--assistant-message-bg)] rounded-2xl rounded-tl-none px-4 py-3">
+      <div className="bg-[var(--assistant-message-bg)] rounded-2xl rounded-tl-none px-3 py-2 shadow-sm">
         <div className="typing-indicator">
           <span></span>
           <span></span>
