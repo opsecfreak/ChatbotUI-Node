@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useState, KeyboardEvent, FormEvent, useRef, useEffect } from 'react';
 
 interface ChatInputProps {

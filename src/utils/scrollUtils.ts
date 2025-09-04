@@ -1,3 +1,5 @@
+"use client";
+
 /**
  * Scrolls an element to the bottom smoothly
  * @param element - The DOM element to scroll
