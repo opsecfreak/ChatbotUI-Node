@@ -8,6 +8,7 @@ export default function SignIn() {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const [isGithubLoading, setIsGithubLoading] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/";
@@ -43,6 +44,15 @@ export default function SignIn() {
       setError("An unexpected error occurred");
     } finally {
       setIsLoading(false);
+    }
+  };
+  
+  const handleGithubSignIn = async () => {
+    try {
+      setIsGithubLoading(true);
+      await signIn("github", { callbackUrl });
+    } catch (error) {
+      console.error("GitHub authentication error:", error);
     }
   };
 

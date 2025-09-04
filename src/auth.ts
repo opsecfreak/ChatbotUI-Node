@@ -85,13 +85,19 @@ export const authConfig = {
     },
     jwt({ token, user }) {
       if (user) {
+        // Store additional user info in JWT token
         token.role = user.role;
+        token.username = user.username;
+        token.provider = user.provider;
       }
       return token;
     },
     session({ session, token }) {
-      if (session.user && token.role) {
+      if (session.user) {
+        // Pass user details from token to session
         session.user.role = token.role as string;
+        session.user.username = token.username as string | undefined;
+        session.user.provider = token.provider as string | undefined;
       }
       return session;
     },
