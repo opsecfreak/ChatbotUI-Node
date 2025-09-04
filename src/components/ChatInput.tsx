@@ -43,7 +43,7 @@ export default function ChatInput({ onSendMessage, isLoading }: ChatInputProps) 
   return (
     <form 
       onSubmit={handleSubmit} 
-      className="flex items-end bg-[var(--background)] border-t border-gray-300 dark:border-gray-700 p-2 sm:p-4"
+      className="flex items-end bg-[var(--background)] border-t border-gray-300 dark:border-gray-700 p-2 sm:px-4 sm:py-2"
     >
       <div className="relative flex-grow">
         <textarea
@@ -52,7 +52,7 @@ export default function ChatInput({ onSendMessage, isLoading }: ChatInputProps) 
           onChange={(e) => setMessage(e.target.value)}
           onKeyDown={handleKeyDown}
           placeholder="Type a message..."
-          className="w-full p-3 pr-10 bg-gray-100 dark:bg-gray-800 rounded-lg resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 min-h-[40px] max-h-[200px] overflow-y-auto"
+          className="w-full p-2 pr-10 bg-gray-100 dark:bg-gray-800 rounded-lg resize-none focus:outline-none focus:ring-1 focus:ring-blue-500 min-h-[36px] max-h-[150px] overflow-y-auto text-sm"
           disabled={isLoading}
           rows={1}
         />
@@ -60,7 +60,7 @@ export default function ChatInput({ onSendMessage, isLoading }: ChatInputProps) 
       <button
         type="submit"
         disabled={!message.trim() || isLoading}
-        className={`ml-2 py-3 px-4 rounded-lg flex items-center justify-center ${
+        className={`ml-2 py-2 px-3 rounded-lg flex items-center justify-center ${
           !message.trim() || isLoading
             ? 'bg-gray-300 dark:bg-gray-700 cursor-not-allowed'
             : 'bg-blue-500 hover:bg-blue-600 text-white'
