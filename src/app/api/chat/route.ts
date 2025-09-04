@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Message } from '../../../types';
-import { getAuthenticatedUser } from '../../../utils/authUtils';
+import { auth } from '../../../auth';
 
 export async function POST(request: NextRequest) {
   try {
     // Verify authentication
-    const { isAuthenticated, user } = await getAuthenticatedUser(request);
+    const session = await auth();
     
-    if (!isAuthenticated) {
+    if (!session) {
       return NextResponse.json(
         { error: 'Unauthorized access' },
         { status: 401 }
