@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { getToken } from "next-auth/jwt";
+import { auth } from "./auth";
 
 export async function middleware(request: NextRequest) {
   // Get the pathname
@@ -16,11 +16,9 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // For all routes, get the token
-  const token = await getToken({ 
-    req: request,
-    secret: process.env.NEXTAUTH_SECRET
-  });
+  // For all routes, check if user is authenticated
+  const session = await auth();
+  const isAuthenticated = !!session;
 
   // Check if it's an API route that needs protection
   if (path.startsWith("/api/")) {

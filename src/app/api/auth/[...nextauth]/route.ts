@@ -1,19 +1,34 @@
 import NextAuth from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
+import type { DefaultSession, NextAuthConfig } from "next-auth"
 
-// For simplicity, we'll use a predefined password.
-// In a production environment, use a proper database and password hashing.
+// Define admin password - In production, use a secure database
 const ADMIN_PASSWORD = "secure_password_123"
 
-export const authOptions = {
+// Extend the built-in session types
+declare module "next-auth" {
+  interface Session {
+    user: {
+      role?: string
+    } & DefaultSession["user"]
+  }
+  
+  interface User {
+    role?: string
+  }
+}
+
+// Configure NextAuth
+export const authConfig: NextAuthConfig = {
   providers: [
     CredentialsProvider({
+      id: "credentials",
       name: "Credentials",
       credentials: {
         password: { label: "Password", type: "password" }
       },
       async authorize(credentials) {
-        // Simple authentication logic - in a real app, validate against a database
+        // Simple password check
         if (credentials?.password === ADMIN_PASSWORD) {
           return {
             id: "1",
@@ -22,24 +37,23 @@ export const authOptions = {
             role: "admin"
           }
         }
-        
-        // Return null if authentication fails
         return null
       }
     })
   ],
   callbacks: {
-    jwt: async ({ token, user }) => {
-      // Add user information to the token if available
+    authorized({ auth }) {
+      return !!auth?.user // If there's a user, they're authorized
+    },
+    jwt({ token, user }) {
       if (user) {
         token.role = user.role
       }
       return token
     },
-    session: async ({ session, token }) => {
-      // Add user role to the session from the token
-      if (session.user) {
-        session.user.role = token.role
+    session({ session, token }) {
+      if (session.user && token.role) {
+        session.user.role = token.role as string
       }
       return session
     }
@@ -47,12 +61,10 @@ export const authOptions = {
   pages: {
     signIn: '/auth/signin',
   },
-  secret: process.env.NEXTAUTH_SECRET || "YOUR_FALLBACK_SECRET_KEY_CHANGE_THIS",
-  session: {
-    strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60, // 30 days
-  },
+  secret: process.env.NEXTAUTH_SECRET,
+  session: { strategy: "jwt" },
 }
 
-const handler = NextAuth(authOptions)
+// Export NextAuth handler
+const handler = NextAuth(authConfig)
 export { handler as GET, handler as POST }
