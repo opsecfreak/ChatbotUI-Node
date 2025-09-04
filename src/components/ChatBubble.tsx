@@ -17,17 +17,17 @@ export default function ChatBubble({ message }: ChatBubbleProps) {
       }`}
     >
       <div 
-        className={`max-w-[80%] px-4 py-2 rounded-2xl ${
+        className={`max-w-[85%] px-3 py-2 rounded-2xl shadow-sm ${
           isUser 
             ? 'bg-[var(--user-message-bg)] text-white rounded-tr-none' 
             : 'bg-[var(--assistant-message-bg)] rounded-tl-none'
         }`}
       >
-        <p className="text-sm sm:text-base whitespace-pre-wrap break-words">
+        <p className="text-xs sm:text-sm md:text-base whitespace-pre-wrap break-words leading-relaxed">
           {message.content}
         </p>
         <div 
-          className={`text-xs mt-1 ${
+          className={`text-[10px] mt-1 opacity-70 ${
             isUser ? 'text-blue-100' : 'text-gray-500 dark:text-gray-400'
           }`}
         >
