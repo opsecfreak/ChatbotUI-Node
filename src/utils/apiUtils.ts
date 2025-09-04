@@ -4,13 +4,15 @@
  * API utility functions for making requests to the server
  */
 
+import { Message, Preferences } from '../types';
+
 /**
  * Send a message to the chat API
  * @param message - The user's message
  * @param messages - The conversation history
  * @returns The API response
  */
-export async function sendChatMessage(message: string, messages: any[]) {
+export async function sendChatMessage(message: string, messages: Message[]) {
   try {
     const response = await fetch('/api/chat', {
       method: 'POST',
@@ -36,7 +38,7 @@ export async function sendChatMessage(message: string, messages: any[]) {
  * @param userId - The user's ID
  * @param messages - The messages to save
  */
-export async function saveChatHistory(userId: string, messages: any[]) {
+export async function saveChatHistory(userId: string, messages: Message[]) {
   try {
     const response = await fetch('/api/user/history', {
       method: 'POST',
@@ -107,7 +109,7 @@ export async function getUserPreferences(userId: string) {
  * @param userId - The user's ID
  * @param preferences - The preferences object
  */
-export async function updateUserPreferences(userId: string, preferences: Record<string, any>) {
+export async function updateUserPreferences(userId: string, preferences: Preferences) {
   try {
     const response = await fetch('/api/user/preferences', {
       method: 'POST',

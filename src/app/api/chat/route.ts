@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { Message } from '../../../types';
 import { getAuthenticatedUser } from '../../../utils/authUtils';
 
 export async function POST(request: NextRequest) {

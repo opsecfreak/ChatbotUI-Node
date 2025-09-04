@@ -1,52 +1,20 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
-import { getToken } from "next-auth/jwt";
+import { auth } from "../auth"
+import { NextResponse } from "next/server"
 
-export async function middleware(request: NextRequest) {
-  // Get the pathname
-  const path = request.nextUrl.pathname;
-  
-  // Public paths that don't require authentication
-  const isPublicPath = 
-    path === "/auth/signin" || 
-    path.startsWith("/api/auth") ||
-    path === "/favicon.ico";
+export default auth((req) => {
+  const isLoggedIn = !!req.auth;
+  const { nextUrl } = req;
 
-  if (isPublicPath) {
-    return NextResponse.next();
+  // If the user is not logged in and is trying to access a protected API route,
+  // return a 401 Unauthorized response. The matcher already excludes /api/auth.
+  if (nextUrl.pathname.startsWith('/api/') && !isLoggedIn) {
+    return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
   }
 
-  // For all routes, get the token
-  const token = await getToken({ 
-    req: request,
-    secret: process.env.NEXTAUTH_SECRET
-  });
+  // For all other cases, including protected page routes, the default behavior of `auth`
+  // will handle redirection to the sign-in page correctly if the user is not logged in.
+});
 
-  // Check if it's an API route that needs protection
-  if (path.startsWith("/api/")) {
-    // If no token or token is not valid, return unauthorized for API routes
-    if (!token) {
-      return NextResponse.json(
-        { error: "Unauthorized access" },
-        { status: 401 }
-      );
-    }
-    return NextResponse.next();
-  }
-  
-  // For non-API routes, redirect to sign in page if not authenticated
-  if (!token) {
-    // Store the original URL the user was trying to access
-    const url = new URL("/auth/signin", request.url);
-    url.searchParams.set("callbackUrl", request.url);
-    return NextResponse.redirect(url);
-  }
-
-  // Continue to the protected route
-  return NextResponse.next();
-}
-
-// See "Matching Paths" below to learn more
 export const config = {
   matcher: [
     // Match all API routes except auth

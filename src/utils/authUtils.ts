@@ -27,20 +27,11 @@ export async function getAuthenticatedUser(req: NextRequest) {
   }
 }
 
+import { User } from "../types";
+
 /**
  * Helper function to check if a user has a specific role
  */
-export function hasRole(user: any, role: string) {
+export function hasRole(user: User | null, role: string) {
   return user?.role === role;
-}
-
-/**
- * Helper function to verify JWT token directly
- */
-export function verifyJwt(token: string): Promise<any> {
-  // This would be a JWT verification function
-  // For security, you'd validate the signature, expiration, etc.
-  // This is a placeholder for actual JWT verification logic
-  
-  return Promise.resolve(true);
 }
