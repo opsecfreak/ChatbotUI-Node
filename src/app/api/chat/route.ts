@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
     
     // Log the incoming request data
     console.log('Chat API received:', {
-      user: user?.name || user?.email || user?.id,
+      user: session?.user?.name || session?.user?.email || 'authenticated user',
       message,
       messageCount: messages?.length || 0,
       timestamp: new Date().toISOString()
