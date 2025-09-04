@@ -1,12 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { Message } from '../../../types';
+import { getAuthenticatedUser } from '../../../utils/authUtils';
 
 export async function POST(request: NextRequest) {
   try {
+    // Verify authentication
+    const { isAuthenticated, user } = await getAuthenticatedUser(request);
+    
+    if (!isAuthenticated) {
+      return NextResponse.json(
+        { error: 'Unauthorized access' },
+        { status: 401 }
+      );
+    }
+    
     const { message, messages } = await request.json();
     
     // Log the incoming request data
     console.log('Chat API received:', {
+      user: user?.name || user?.email || user?.id,
       message,
       messageCount: messages?.length || 0,
       timestamp: new Date().toISOString()
