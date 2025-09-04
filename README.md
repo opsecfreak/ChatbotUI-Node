@@ -1,36 +1,105 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Modern Chat Application
+
+A modern, responsive chat application built with Next.js, TypeScript, Tailwind CSS, and NextAuth.js. This application provides a secure authentication system using both password-based login and GitHub OAuth, along with a clean UI for real-time chat interactions.
+
+## Features
+
+- 🔒 **Secure Authentication**
+  - Password-based login for admin access
+  - GitHub OAuth integration
+  - JWT-based session management
+- 💬 **Modern Chat Interface**
+  - Responsive design that works on all devices
+  - Real-time typing indicators
+  - Auto-scrolling chat window
+  - Smooth animations and transitions
+- 🛠️ **Developer-Friendly**
+  - TypeScript for type safety
+  - Clean component structure
+  - Well-documented code
+  - Easy to extend and customize
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
+- Node.js 16.x or higher
+- npm or yarn
+
+### Installation
+
+1. Clone the repository
+2. Install dependencies
+```bash
+npm install
+# or
+yarn install
+```
+
+3. Set up environment variables
+Copy the `.env.example` file to `.env.local` and fill in the required values:
+```bash
+cp .env.example .env.local
+```
+
+4. Start the development server:
 ```bash
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+5. Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Setting Up GitHub OAuth
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+To enable GitHub login, follow these steps:
 
-## Learn More
+1. Go to your [GitHub Developer Settings](https://github.com/settings/developers)
+2. Click on "New OAuth App"
+3. Fill in the application details:
+   - **Application name**: Your Chat App
+   - **Homepage URL**: http://localhost:3000 (for development)
+   - **Application description**: (Optional) A description of your app
+   - **Authorization callback URL**: http://localhost:3000/api/auth/callback/github
+4. Click "Register application"
+5. On the next screen, copy your Client ID
+6. Click "Generate a new client secret" and copy the generated secret
+7. Add these values to your `.env.local` file:
+   ```
+   GITHUB_ID=your_client_id_here
+   GITHUB_SECRET=your_client_secret_here
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+## Environment Variables
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Create a `.env.local` file with the following variables:
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+# NextAuth Configuration
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=your_nextauth_secret_at_least_32_characters
 
-## Deploy on Vercel
+# GitHub OAuth
+GITHUB_ID=your_github_oauth_app_client_id
+GITHUB_SECRET=your_github_oauth_app_client_secret
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Authentication Flow
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This application supports two authentication methods:
+
+1. **Password Authentication**:
+   - A predefined password (`secure_password_123`) is used for admin access
+   - In a production environment, you should replace this with a secure user database
+
+2. **GitHub OAuth**:
+   - Users can sign in with their GitHub account
+   - Basic user information (username, profile image) is retrieved and displayed
+   - User data can be stored in a database for persistence
+
+## Deployment
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new) from the creators of Next.js.
+
+Make sure to configure your environment variables in your deployment platform.

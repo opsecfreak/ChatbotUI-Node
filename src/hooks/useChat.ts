@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
 import { Message } from '../types';
 import { sendChatMessage, saveChatHistory } from '../utils/apiUtils';
 
