@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * Scrolls an element to the bottom smoothly
+ * Scrolls an element to the bottom smoothly with improved reliability
  * @param element - The DOM element to scroll
  * @param behavior - The scroll behavior
  */
@@ -11,11 +11,13 @@ export const scrollToBottom = (
 ): void => {
   if (!element) return;
   
-  // Use requestAnimationFrame to ensure the scroll happens after any pending DOM updates
+  // Use double requestAnimationFrame for more reliable scrolling after DOM updates
   requestAnimationFrame(() => {
-    element.scrollTo({
-      top: element.scrollHeight,
-      behavior,
+    requestAnimationFrame(() => {
+      element.scrollTo({
+        top: element.scrollHeight,
+        behavior,
+      });
     });
   });
 };

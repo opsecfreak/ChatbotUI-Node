@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useCallback } from 'react';
 import ChatBubble from './ChatBubble';
 import { Message } from '../types';
 import { scrollToBottom, isNearBottom } from '../utils/scrollUtils';
@@ -13,8 +13,21 @@ interface ChatContainerProps {
 export default function ChatContainer({ messages, isLoading }: ChatContainerProps) {
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const wasNearBottomRef = useRef(true);
+  const observerRef = useRef<IntersectionObserver | null>(null);
+  const lastMessageRef = useRef<HTMLDivElement>(null);
+  
+  // Scroll to bottom function that can be called from elsewhere
+  const scrollToBottomHandler = useCallback(() => {
+    scrollToBottom(chatContainerRef.current);
+  }, []);
+  
+  // Scroll on resize for better responsiveness
+  useEffect(() => {
+    window.addEventListener('resize', scrollToBottomHandler);
+    return () => window.removeEventListener('resize', scrollToBottomHandler);
+  }, [scrollToBottomHandler]);
 
-  // Handle automatic scrolling
+  // Handle automatic scrolling with messages change
   useEffect(() => {
     const container = chatContainerRef.current;
     
@@ -23,7 +36,12 @@ export default function ChatContainer({ messages, isLoading }: ChatContainerProp
     
     // If we were already near the bottom, scroll to the bottom again
     if (wasNearBottomRef.current) {
-      scrollToBottom(container);
+      // Immediate scroll for better UX
+      container?.scrollTo({ top: container.scrollHeight });
+      // Then smooth scroll after a slight delay to ensure DOM is updated
+      setTimeout(() => {
+        scrollToBottom(container);
+      }, 100);
     }
   }, [messages]);
 
