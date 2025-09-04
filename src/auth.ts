@@ -1,6 +1,27 @@
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import type { NextAuthConfig } from "next-auth";
+import type { DefaultSession } from "next-auth";
+
+// Extend the next-auth types
+declare module "next-auth" {
+  interface Session {
+    user: {
+      role?: string;
+      id?: string;
+    } & DefaultSession["user"];
+  }
+  
+  interface User {
+    role?: string;
+  }
+}
+
+declare module "next-auth/jwt" {
+  interface JWT {
+    role?: string;
+  }
+}
 
 // For simplicity, we'll use a predefined password.
 // In a production environment, use a proper database and password hashing.
