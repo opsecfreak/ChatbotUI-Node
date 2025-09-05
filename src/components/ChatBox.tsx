@@ -9,7 +9,7 @@ import LogoutButton from './auth/LogoutButton';
 import { useSession } from 'next-auth/react';
 
 export default function ChatBox() {
-  const { messages, isLoading, error, sendMessage } = useChat();
+  const { messages, isLoading, error, sendMessage, resetChat, retryLastMessage } = useChat();
   const [showFeedback, setShowFeedback] = useState(false);
   const { data: session } = useSession();
   
@@ -79,8 +79,24 @@ export default function ChatBox() {
       <ChatContainer messages={messages} isLoading={isLoading} />
       
       {error && (
-        <div className="px-4 py-2 bg-red-50 dark:bg-red-900/30 border-t border-red-200 dark:border-red-900">
-          <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+        <div className="px-4 py-2 bg-red-50 dark:bg-red-900/20 border-t border-red-200 dark:border-red-900 flex flex-col sm:flex-row items-center justify-between">
+          <p className="text-sm text-red-600 dark:text-red-400 mb-2 sm:mb-0">{error}</p>
+          <div className="flex space-x-2">
+            <button 
+              onClick={retryLastMessage}
+              disabled={isLoading}
+              className="text-xs px-3 py-1 rounded bg-red-100 hover:bg-red-200 dark:bg-red-900/40 dark:hover:bg-red-900/60 text-red-700 dark:text-red-300 transition"
+            >
+              Retry Message
+            </button>
+            <button 
+              onClick={resetChat}
+              disabled={isLoading}
+              className="text-xs px-3 py-1 rounded bg-gray-100 hover:bg-gray-200 dark:bg-gray-800 dark:hover:bg-gray-700 transition"
+            >
+              Reset Chat
+            </button>
+          </div>
         </div>
       )}
       
