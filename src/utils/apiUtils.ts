@@ -8,20 +8,24 @@
  * Send a message to the chat API
  * @param message - The user's message
  * @param messages - The conversation history
+ * @param agentType - The type of agent to use (optional)
  * @returns The API response
  */
-export async function sendChatMessage(message: string, messages: any[]) {
+export async function sendChatMessage(message: string, messages: any[], agentType?: string) {
   try {
     const controller = new AbortController();
     // Set a timeout to prevent hanging requests
     const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 seconds timeout
     
-    const response = await fetch('/api/chat', {
+    // If agentType is provided, use the agent-specific API endpoint
+    const endpoint = agentType ? '/api/agents/chat' : '/api/chat';
+    
+    const response = await fetch(endpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ message, messages }),
+      body: JSON.stringify({ message, messages, agentType }),
       signal: controller.signal,
     });
     
@@ -136,6 +140,35 @@ export async function updateUserPreferences(userId: string, preferences: Record<
     return await response.json();
   } catch (error) {
     console.error('Failed to update preferences:', error);
+    throw error;
+  }
+}
+
+/**
+ * Fetch available agent types
+ * @returns List of available agent types
+ */
+export async function fetchAgentTypes() {
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 5000); // 5 seconds timeout
+    
+    const response = await fetch('/api/agents/types', {
+      signal: controller.signal,
+    });
+    
+    clearTimeout(timeoutId);
+
+    if (!response.ok) {
+      throw new Error(`Error: ${response.status}`);
+    }
+
+    return await response.json();
+  } catch (error: any) {
+    console.error('Failed to fetch agent types:', error);
+    if (error.name === 'AbortError') {
+      throw new Error('Request timed out while fetching agent types.');
+    }
     throw error;
   }
 }

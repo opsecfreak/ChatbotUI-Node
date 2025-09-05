@@ -31,14 +31,25 @@ export default function ChatBubble({ message }: ChatBubbleProps) {
           {message.content}
         </p>
         <div 
-          className={`text-[10px] mt-1 opacity-70 ${
-            isUser ? 'text-blue-100' : 'text-gray-500 dark:text-gray-400'
+          className={`text-[10px] mt-1 opacity-70 flex items-center ${
+            isUser ? 'text-blue-100 justify-end' : 'text-gray-500 dark:text-gray-400 justify-between'
           }`}
         >
-          {new Date(message.timestamp).toLocaleTimeString(undefined, {
-            hour: '2-digit',
-            minute: '2-digit'
-          })}
+          {!isUser && message.metadata?.agentType && (
+            <span className="flex items-center space-x-1">
+              {message.metadata.agentType === 'coding' && <span title="Code Assistant">💻</span>}
+              {message.metadata.agentType === 'creative' && <span title="Creative Assistant">🎨</span>}
+              {message.metadata.agentType === 'academic' && <span title="Academic Assistant">📚</span>}
+              {message.metadata.agentType === 'general' && <span title="General Assistant">🤖</span>}
+              <span>{message.metadata.agentName || 'Assistant'}</span>
+            </span>
+          )}
+          <span>
+            {new Date(message.timestamp).toLocaleTimeString(undefined, {
+              hour: '2-digit',
+              minute: '2-digit'
+            })}
+          </span>
         </div>
       </div>
     </div>

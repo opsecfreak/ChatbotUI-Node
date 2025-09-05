@@ -1,30 +1,119 @@
 "use client";
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import { useSession } from 'next-auth/react';
 import { Message } from '../types';
-import { sendChatMessage, saveChatHistory } from '../utils/apiUtils';
+import { sendChatMessage, saveChatHistory, fetchAgentTypes } from '../utils/apiUtils';
+
+export interface AgentType {
+  id: string;
+  name: string;
+  description: string;
+  icon: string;
+}
 
 export function useChat() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [retryCount, setRetryCount] = useState(0);
+  const [selectedAgent, setSelectedAgent] = useState<string>('general');
+  const [availableAgents, setAvailableAgents] = useState<AgentType[]>([]);
+  const [loadingAgents, setLoadingAgents] = useState(false);
   const { data: session } = useSession();
 
   // Initialize with a welcome message
-  useEffect(() => {
-    if (messages.length === 0) {
-      setMessages([
-        {
-          id: '1',
-          content: 'Hello! How can I assist you today?',
-          role: 'assistant',
-          timestamp: new Date(),
-        },
-      ]);
+  // Get welcome message based on agent type
+  const getWelcomeMessage = useCallback((agentId: string) => {
+    switch (agentId) {
+      case 'coding':
+        return "Hello! I'm your coding assistant. What programming challenge can I help you with today?";
+      case 'creative':
+        return "Welcome! I'm your creative assistant. Looking for inspiration or help with creative content?";
+      case 'academic':
+        return "Greetings! I'm your academic assistant. How can I help with your research or studies today?";
+      case 'general':
+      default:
+        return "Hello! How can I assist you today?";
     }
-  }, [messages.length]);
+  }, []);
+
+  // Initialize with a welcome message
+  useEffect(() => {
+    // Create a new welcome message for first load
+    if (messages.length === 0) {
+      const currentAgent = availableAgents.find(a => a.id === selectedAgent);
+      const welcomeMessage: Message = {
+        id: `welcome-${Date.now()}`,
+        content: getWelcomeMessage(selectedAgent),
+        role: 'assistant',
+        timestamp: new Date(),
+        metadata: {
+          agentType: selectedAgent,
+          agentName: currentAgent?.name || 'Assistant'
+        }
+      };
+      
+      setMessages([welcomeMessage]);
+    }
+  }, [messages.length, selectedAgent, getWelcomeMessage]);
+  
+  // Reset chat when agent type changes
+  const previousAgentRef = useRef(selectedAgent);
+  
+  useEffect(() => {
+    // Skip on first render
+    if (previousAgentRef.current !== selectedAgent && messages.length > 0) {
+      // Agent has changed, reset the chat
+      const currentAgent = availableAgents.find(a => a.id === selectedAgent);
+      const welcomeMessage: Message = {
+        id: `welcome-${Date.now()}`,
+        content: getWelcomeMessage(selectedAgent),
+        role: 'assistant',
+        timestamp: new Date(),
+        metadata: {
+          agentType: selectedAgent,
+          agentName: currentAgent?.name || 'Assistant'
+        }
+      };
+      
+      setMessages([welcomeMessage]);
+      setError(null);
+    }
+    
+    previousAgentRef.current = selectedAgent;
+  }, [selectedAgent, getWelcomeMessage]);
+  
+  // Load available agent types
+  useEffect(() => {
+    const loadAgentTypes = async () => {
+      if (session?.user) {
+        try {
+          setLoadingAgents(true);
+          const data = await fetchAgentTypes();
+          setAvailableAgents(data.agents || []);
+          if (data.default && !selectedAgent) {
+            setSelectedAgent(data.default);
+          }
+        } catch (err) {
+          console.error('Error loading agent types:', err);
+          // Fallback to a default agent list if the API fails
+          setAvailableAgents([
+            { 
+              id: 'general',
+              name: 'General Assistant',
+              description: 'A helpful assistant for general information',
+              icon: '🤖'
+            }
+          ]);
+        } finally {
+          setLoadingAgents(false);
+        }
+      }
+    };
+    
+    loadAgentTypes();
+  }, [session?.user, selectedAgent]);
 
   const sendMessage = useCallback(async (content: string) => {
     if (!content.trim()) return;
@@ -48,8 +137,8 @@ export function useChat() {
       setIsLoading(true);
       setError(null);
       
-      // Send the message to the API using our utility function
-      const data = await sendChatMessage(content, messages);
+      // Send the message to the API using our utility function with selected agent
+      const data = await sendChatMessage(content, messages, selectedAgent);
       
       // Create a new assistant message
       const assistantMessage: Message = {
@@ -57,6 +146,10 @@ export function useChat() {
         content: data.message,
         role: 'assistant',
         timestamp: new Date(),
+        metadata: {
+          agentType: selectedAgent,
+          agentName: availableAgents.find(a => a.id === selectedAgent)?.name || 'Assistant'
+        }
       };
       
       // Add the assistant message to the chat
@@ -102,25 +195,37 @@ export function useChat() {
         content: `⚠️ ${errorMessage}`,
         role: 'assistant',
         timestamp: new Date(),
+        metadata: {
+          error: true,
+          agentType: selectedAgent,
+          agentName: 'Error'
+        }
       };
       
       setMessages(prev => [...prev, errorNotification]);
     } finally {
       setIsLoading(false);
     }
-  }, [messages, retryCount]);
+  }, [messages, retryCount, selectedAgent]);
   
   // Reset the chat with a fresh conversation
   const resetChat = useCallback(() => {
-    setMessages([{
-      id: '1',
-      content: 'Hello! How can I assist you today?',
+    const currentAgent = availableAgents.find(a => a.id === selectedAgent);
+    const welcomeMessage: Message = {
+      id: `welcome-${Date.now()}`,
+      content: getWelcomeMessage(selectedAgent),
       role: 'assistant',
       timestamp: new Date(),
-    }]);
+      metadata: {
+        agentType: selectedAgent,
+        agentName: currentAgent?.name || 'Assistant'
+      }
+    };
+    
+    setMessages([welcomeMessage]);
     setError(null);
     setRetryCount(prev => prev + 1); // Increment retry count to force useCallback recreation
-  }, []);
+  }, [selectedAgent, getWelcomeMessage]);
   
   // Retry the last user message
   const retryLastMessage = useCallback(() => {
@@ -148,5 +253,9 @@ export function useChat() {
     sendMessage,
     resetChat,
     retryLastMessage,
+    selectedAgent,
+    setSelectedAgent,
+    availableAgents,
+    loadingAgents,
   };
 }
