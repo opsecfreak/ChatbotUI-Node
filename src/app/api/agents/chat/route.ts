@@ -2,6 +2,26 @@ import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '../../../../auth';
 import { getOpenAIClient, createAgentMessages, defaultChatConfig } from '../../../../utils/openaiUtils';
 
+/**
+ * Agent Chat API
+ * 
+ * This endpoint handles communication with specialized OpenAI agents.
+ * It processes user messages and returns AI-generated responses with
+ * appropriate context based on the selected agent type.
+ * 
+ * OPTIMIZATION OPPORTUNITIES:
+ * - Implement streaming responses for faster first response
+ * - Add caching for similar queries to reduce API costs
+ * - Implement rate limiting per user to prevent abuse
+ * - Add request logging and analytics
+ * 
+ * SECURITY CONSIDERATIONS:
+ * - Authentication is required for all requests
+ * - API keys are kept server-side only
+ * - Input validation prevents injection attacks
+ * - Error handling avoids leaking sensitive information
+ */
+
 export async function POST(request: NextRequest) {
   try {
     // Verify authentication

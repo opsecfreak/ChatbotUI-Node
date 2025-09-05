@@ -1,13 +1,27 @@
 "use client";
 
+/**
+ * AgentSelector Component
+ * 
+ * This component provides a dropdown UI for selecting different AI agents.
+ * It displays an icon and name for the current agent and provides a dropdown
+ * with more details about each available agent.
+ * 
+ * CUSTOMIZATION POINTS:
+ * - Modify the dropdown styling to match your brand
+ * - Add agent-specific icons or imagery
+ * - Implement agent grouping or categorization
+ * - Add tooltips with more information about each agent
+ */
+
 import React, { useState } from 'react';
 import { AgentType } from '../hooks/useChat';
 
 interface AgentSelectorProps {
-  agents: AgentType[];
-  selectedAgent: string;
-  onSelectAgent: (agentId: string) => void;
-  isLoading: boolean;
+  agents: AgentType[];           // List of available agents
+  selectedAgent: string;         // Currently selected agent ID
+  onSelectAgent: (agentId: string) => void;  // Callback when agent is selected
+  isLoading: boolean;            // Whether the chat is currently processing
 }
 
 export default function AgentSelector({ 

@@ -1,7 +1,23 @@
 "use client";
 
 /**
- * API utility functions for making requests to the server
+ * API Utility Functions
+ * 
+ * This file contains utility functions for making API requests to the server.
+ * Each function handles a specific API endpoint and includes proper error handling,
+ * timeout management, and response parsing.
+ * 
+ * SECURITY NOTES:
+ * - All API requests include automatic timeouts to prevent hanging
+ * - Error handling is designed to not expose sensitive information
+ * - Input validation should be added to both client and server sides
+ * 
+ * EXTENSION POINTS:
+ * - Add request caching for improved performance
+ * - Implement retry logic for failed requests
+ * - Add request batching for multiple messages
+ * - Implement offline support with request queueing
+ * - Add analytics or monitoring for API performance
  */
 
 /**

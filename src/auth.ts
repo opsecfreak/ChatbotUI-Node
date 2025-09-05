@@ -1,3 +1,22 @@
+/**
+ * Authentication Configuration
+ * 
+ * This file configures NextAuth.js for handling authentication in the application.
+ * It sets up multiple authentication providers and defines session handling.
+ * 
+ * SECURITY BEST PRACTICES:
+ * - Use environment variables for all secrets
+ * - Implement proper CSRF protection
+ * - Set appropriate session lifetimes
+ * - Use secure cookies in production
+ * 
+ * CUSTOMIZATION OPTIONS:
+ * - Add additional auth providers (Google, Microsoft, etc.)
+ * - Implement database session storage for persistence
+ * - Add custom callbacks for authorization logic
+ * - Extend user profiles with additional data
+ */
+
 import NextAuth from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import GitHubProvider from "next-auth/providers/github";

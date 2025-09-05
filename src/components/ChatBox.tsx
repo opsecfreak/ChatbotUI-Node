@@ -1,5 +1,23 @@
 "use client";
 
+/**
+ * ChatBox Component - Main Chat Interface
+ * 
+ * This is the primary chat interface component that combines all chat-related elements:
+ * - Header with user info and agent selection
+ * - Message container
+ * - Input area
+ * - Error handling UI
+ * - Feedback mechanism
+ * 
+ * CUSTOMIZATION POINTS:
+ * - Add custom branding elements to the header
+ * - Implement more advanced feedback collection
+ * - Add additional chat controls or settings
+ * - Customize error display and recovery options
+ * - Add chat export/import functionality
+ */
+
 import React, { useState } from 'react';
 import ChatContainer from './ChatContainer';
 import ChatInput from './ChatInput';

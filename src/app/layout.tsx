@@ -1,3 +1,20 @@
+/**
+ * Root Layout Component
+ * 
+ * This is the main layout component for the entire application.
+ * It wraps all pages and provides:
+ * - Authentication context
+ * - Global fonts
+ * - Metadata for SEO
+ * - Global styles
+ * 
+ * CUSTOMIZATION OPTIONS:
+ * - Update metadata for your application
+ * - Add global navigation components
+ * - Implement theme switching
+ * - Add analytics or monitoring scripts
+ */
+
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";

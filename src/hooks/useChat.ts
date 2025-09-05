@@ -1,5 +1,21 @@
 "use client";
 
+/**
+ * useChat.ts - Core Chat Functionality Hook
+ * 
+ * This hook encapsulates all the chat functionality including:
+ * - Message state management
+ * - Agent selection and management
+ * - API communication
+ * - Error handling and recovery
+ * 
+ * EXTENSION POINTS:
+ * - Add more agent types by updating the available agents section
+ * - Implement persistent storage for chat history
+ * - Add typing indicators or other UI enhancements
+ * - Implement more sophisticated error handling
+ */
+
 import { useState, useCallback, useEffect, useRef } from 'react';
 import { useSession } from 'next-auth/react';
 import { Message } from '../types';

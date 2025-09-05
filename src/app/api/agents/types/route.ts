@@ -1,6 +1,23 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { auth } from '../../../../auth';
 
+/**
+ * Agent Types API
+ * 
+ * This endpoint provides information about available chat agent types.
+ * Each agent has a unique ID, display name, description, and visual icon.
+ * 
+ * CUSTOMIZATION GUIDE:
+ * To add a new agent type:
+ * 1. Add a new entry to the agentTypes object below
+ * 2. Provide id, name, description, and icon
+ * 3. Update the corresponding prompt templates in openaiUtils.ts
+ * 
+ * SECURITY NOTE:
+ * This endpoint requires authentication to prevent unauthorized access
+ * to agent capabilities and customizations.
+ */
+
 // Define available agent types and their descriptions
 const agentTypes = {
   general: {
