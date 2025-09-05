@@ -67,6 +67,10 @@ export function useChat() {
         if (session?.user?.id) {
           saveChatHistory(session.user.id, updatedMessages)
             .catch(err => console.error('Failed to save history:', err));
+        } else {
+          // For backwards compatibility or if user ID is not available
+          saveChatHistory(session?.user?.email || 'anonymous-user', updatedMessages)
+            .catch(err => console.error('Failed to save history:', err));
         }
           
         return updatedMessages;
