@@ -23,9 +23,10 @@ declare module "next-auth/jwt" {
   }
 }
 
-// For simplicity, we'll use a predefined password.
 // In a production environment, use a proper database and password hashing.
-const ADMIN_PASSWORD = "secure_password_123";
+if (!process.env.ADMIN_PASSWORD) {
+  throw new Error("Missing ADMIN_PASSWORD environment variable");
+}
 
 export const authConfig = {
   providers: [
@@ -35,7 +36,7 @@ export const authConfig = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        if (credentials?.password === ADMIN_PASSWORD) {
+        if (credentials?.password === process.env.ADMIN_PASSWORD) {
           return {
             id: "1",
             name: "Admin User",
