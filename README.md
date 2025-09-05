@@ -87,6 +87,14 @@ NEXTAUTH_SECRET=your_nextauth_secret_at_least_32_characters
 # GitHub OAuth
 GITHUB_ID=your_github_oauth_app_client_id
 GITHUB_SECRET=your_github_oauth_app_client_secret
+
+# OpenAI API Configuration
+OPENAI_API_KEY=your_openai_api_key_here
+OPENAI_ORGANIZATION=your_openai_org_id_optional
+OPENAI_MODEL=gpt-4o
+
+# Admin Password
+ADMIN_PASSWORD=secure_password_123
 ```
 
 ## Authentication Flow
@@ -101,6 +109,30 @@ This application supports two authentication methods:
    - Users can sign in with their GitHub account
    - Basic user information (username, profile image) is retrieved and displayed
    - User data can be stored in a database for persistence
+
+## OpenAI Integration
+
+This application integrates with OpenAI's API to provide intelligent chat responses. To set up:
+
+1. Get an API key from [OpenAI](https://platform.openai.com/api-keys)
+2. Add your key to the `.env.local` file:
+   ```
+   OPENAI_API_KEY=your_api_key_here
+   OPENAI_MODEL=gpt-4o  # or another model of your choice
+   ```
+
+### Available Agent Types
+
+The application supports multiple agent types for different use cases:
+
+- **General Assistant**: For everyday conversations and general information
+- **Code Assistant**: Helps with programming questions and code examples
+- **Creative Assistant**: For creative writing and content creation
+- **Academic Assistant**: Provides scholarly information and research help
+
+### Fallback Mode
+
+If no OpenAI API key is provided, the application falls back to a simple rule-based response system.
 
 ## Deployment
 
