@@ -13,6 +13,10 @@ A modern, responsive chat application built with Next.js, TypeScript, Tailwind C
   - Real-time typing indicators
   - Auto-scrolling chat window
   - Smooth animations and transitions
+- 🤖 **AI Integration**
+  - OpenAI API integration for intelligent responses
+  - Multiple agent types for different use cases
+  - Fallback responses when API key is not available
 - 🛠️ **Developer-Friendly**
   - TypeScript for type safety
   - Clean component structure
