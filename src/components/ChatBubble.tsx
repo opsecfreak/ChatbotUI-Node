@@ -20,10 +20,14 @@ export default function ChatBubble({ message }: ChatBubbleProps) {
         className={`max-w-[85%] px-3 py-2 rounded-2xl shadow-sm ${
           isUser 
             ? 'bg-[var(--user-message-bg)] text-white rounded-tr-none' 
-            : 'bg-[var(--assistant-message-bg)] rounded-tl-none'
+            : message.content.includes('⚠️') 
+              ? 'bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-900/50 rounded-tl-none' 
+              : 'bg-[var(--assistant-message-bg)] rounded-tl-none'
         }`}
       >
-        <p className="text-xs sm:text-sm md:text-base whitespace-pre-wrap break-words leading-relaxed">
+        <p className={`text-xs sm:text-sm md:text-base whitespace-pre-wrap break-words leading-relaxed ${
+          message.content.includes('⚠️') ? 'text-red-600 dark:text-red-400' : ''
+        }`}>
           {message.content}
         </p>
         <div 

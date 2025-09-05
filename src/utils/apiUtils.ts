@@ -12,21 +12,33 @@
  */
 export async function sendChatMessage(message: string, messages: any[]) {
   try {
+    const controller = new AbortController();
+    // Set a timeout to prevent hanging requests
+    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 seconds timeout
+    
     const response = await fetch('/api/chat', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ message, messages }),
+      signal: controller.signal,
     });
+    
+    clearTimeout(timeoutId);
 
     if (!response.ok) {
-      throw new Error(`Error: ${response.status}`);
+      const errorData = await response.json().catch(() => null);
+      const errorMessage = errorData?.error || `Server error: ${response.status}`;
+      throw new Error(`${errorMessage} (${response.status})`);
     }
 
     return await response.json();
-  } catch (error) {
+  } catch (error: any) {
     console.error('API call failed:', error);
+    if (error.name === 'AbortError') {
+      throw new Error('Request timed out. The server took too long to respond.');
+    }
     throw error;
   }
 }
